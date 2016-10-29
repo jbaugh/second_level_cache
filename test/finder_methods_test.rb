@@ -24,7 +24,7 @@ class FinderMethodsTest < ActiveSupport::TestCase
     end
   end
 
-  def test_should_not_find_from_cache_when_select_speical_columns
+  def test_should_not_find_from_cache_when_select_special_columns
     @user.write_second_level_cache
     only_id_user = User.select('id').find(@user.id)
     assert_raises(ActiveModel::MissingAttributeError) do
