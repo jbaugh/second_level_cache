@@ -23,7 +23,7 @@ module SecondLevelCache
         @second_level_cache_enabled = true
         @second_level_cache_options = options
         @second_level_cache_options[:expires_in] ||= 1.week
-        @second_level_cache_options[:version] ||= 0
+        @second_level_cache_options[:class] = self
         relation.class.send :prepend, SecondLevelCache::ActiveRecord::FinderMethods
         prepend SecondLevelCache::ActiveRecord::Core
       end
@@ -41,8 +41,12 @@ module SecondLevelCache
         @second_level_cache_enabled = old
       end
 
+      def hash_columns
+        second_level_cache_options[:class].column_names.sum.sum
+      end
+
       def cache_version
-        second_level_cache_options[:version]
+        second_level_cache_options[:version] || hash_columns
       end
 
       def second_level_cache_key(id)
